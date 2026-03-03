@@ -30,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* Grid background */
   body::before {
     content: '';
     position: fixed;
@@ -51,10 +50,26 @@
     z-index: 1;
   }
 
-  /* ── HEADER ── */
+  /* HEADER */
   header {
     padding: 80px 0 60px;
     border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #neuro-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  header .container {
+    position: relative;
+    z-index: 2;
   }
 
   .header-tag {
@@ -85,9 +100,7 @@
     margin-bottom: 8px;
   }
 
-  .name-accent {
-    color: var(--accent);
-  }
+  .name-accent { color: var(--accent); }
 
   .degree {
     font-size: 13px;
@@ -104,16 +117,9 @@
     margin-bottom: 32px;
   }
 
-  .bio strong {
-    color: #fff;
-    font-weight: 500;
-  }
+  .bio strong { color: #fff; font-weight: 500; }
 
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; }
 
   .link-pill {
     display: inline-flex;
@@ -137,7 +143,7 @@
 
   .link-pill svg { width: 14px; height: 14px; }
 
-  /* ── SECTIONS ── */
+  /* SECTIONS */
   section {
     padding: 60px 0;
     border-bottom: 1px solid var(--border);
@@ -159,7 +165,7 @@
     margin-bottom: 32px;
   }
 
-  /* ── REPO CARDS ── */
+  /* REPO CARDS */
   .repo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
@@ -216,9 +222,8 @@
     gap: 6px;
   }
 
-  .repo-name .lang-dot {
-    width: 8px;
-    height: 8px;
+  .lang-dot {
+    width: 8px; height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
     margin-left: 4px;
@@ -233,10 +238,7 @@
     transition: color 0.2s, transform 0.2s;
   }
 
-  .repo-card:hover .arrow {
-    color: var(--accent);
-    transform: translate(2px, -2px);
-  }
+  .repo-card:hover .arrow { color: var(--accent); transform: translate(2px, -2px); }
 
   .repo-desc {
     font-size: 12px;
@@ -267,15 +269,12 @@
     border-color: rgba(123, 97, 255, 0.15);
   }
 
-  /* ── PUBLICATION ── */
+  /* PUBLICATION */
   .pub-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 28px;
-    text-decoration: none;
-    display: block;
-    transition: all 0.25s;
     position: relative;
     overflow: hidden;
   }
@@ -286,18 +285,7 @@
     top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, var(--green), var(--accent));
-    opacity: 0;
-    transition: opacity 0.25s;
   }
-
-  .pub-card:hover {
-    border-color: rgba(57, 211, 83, 0.3);
-    background: var(--surface2);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  }
-
-  .pub-card:hover::before { opacity: 1; }
 
   .pub-meta {
     font-size: 11px;
@@ -333,9 +321,7 @@
     line-height: 1.6;
   }
 
-  .pub-authors strong {
-    color: var(--text);
-  }
+  .pub-authors strong { color: var(--text); }
 
   .pub-footer {
     display: flex;
@@ -345,10 +331,7 @@
     gap: 12px;
   }
 
-  .pub-links {
-    display: flex;
-    gap: 10px;
-  }
+  .pub-links { display: flex; gap: 10px; }
 
   .pub-link {
     font-size: 11px;
@@ -360,10 +343,7 @@
     transition: all 0.2s;
   }
 
-  .pub-link:hover {
-    border-color: var(--green);
-    color: var(--green);
-  }
+  .pub-link:hover { border-color: var(--green); color: var(--green); }
 
   .pub-link.primary {
     background: rgba(57, 211, 83, 0.1);
@@ -371,7 +351,7 @@
     color: var(--green);
   }
 
-  /* ── FOOTER ── */
+  /* FOOTER */
   footer {
     padding: 40px 0;
     text-align: center;
@@ -379,16 +359,14 @@
     color: var(--dim);
   }
 
-  /* ── ANIMATIONS ── */
+  /* ANIMATIONS */
   .fade-in {
     opacity: 0;
     transform: translateY(16px);
     animation: fadeUp 0.5s ease forwards;
   }
 
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
   .fade-in:nth-child(1) { animation-delay: 0.05s; }
   .fade-in:nth-child(2) { animation-delay: 0.12s; }
@@ -405,54 +383,47 @@
 
 <div class="container">
 
-  <!-- HEADER -->
   <header>
-    <div class="header-tag">Computational Neuroscience</div>
-    <h1>Matthew<br><span class="name-accent">Tarchick</span></h1>
-    <div class="degree">Ph.D. · Integrated Bioscience · University of Akron → UC Berkeley</div>
-    <p class="bio">
-      I build the hardware to collect neural data and the software to model it.
-      My work sits at the intersection of <strong>retinal physiology</strong>, <strong>biophysical modeling</strong>,
-      and <strong>computational neuroscience</strong>: from patented electrophysiology devices
-      to ODE networks of retinal circuit dynamics. Currently building a biophysically grounded
-      digital twin of the retinal circuit, constrained by population recordings,
-      multi-omics, and spatial transcriptomics.
-    </p>
-    <div class="links">
-      <a href="https://github.com/mattar13" class="link-pill" target="_blank">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-        github.com/mattar13
-      </a>
-      <a href="mailto:mtarchick13@gmail.com" class="link-pill">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        mtarchick13@gmail.com
-      </a>
-      <a href="https://scholar.google.com/citations?user=YOUR_ID" class="link-pill" target="_blank">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.21 1.79 4 4 4s4-1.79 4-4v-4.27l2-1.09V17h2v-5.82L23 9 12 3zm4 14c0 2.21-1.79 4-4 4s-4-1.79-4-4v-3.27l4 2.18 4-2.18V17z"/></svg>
-        Google Scholar
-      </a>
+    <canvas id="neuro-canvas"></canvas>
+    <div class="container">
+      <div class="header-tag">Computational Neuroscience</div>
+      <h1>Matthew<br><span class="name-accent">Tarchick</span></h1>
+      <div class="degree">Ph.D. &middot; Integrated Bioscience &middot; University of Akron &rarr; UC Berkeley</div>
+      <p class="bio">
+        I build the hardware to collect neural data and the software to model it.
+        My work sits at the intersection of <strong>retinal physiology</strong>, <strong>biophysical modeling</strong>,
+        and <strong>computational neuroscience</strong>: from patented electrophysiology devices
+        to ODE networks of retinal circuit dynamics. Currently building a biophysically grounded
+        digital twin of the retinal circuit, constrained by population recordings,
+        multi-omics, and spatial transcriptomics.
+      </p>
+      <div class="links">
+        <a href="https://github.com/mattar13" class="link-pill" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+          github.com/mattar13
+        </a>
+        <a href="mailto:mtarchick13@gmail.com" class="link-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          mtarchick13@gmail.com
+        </a>
+        <a href="https://scholar.google.com/citations?user=YOUR_ID" class="link-pill" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.21 1.79 4 4 4s4-1.79 4-4v-4.27l2-1.09V17h2v-5.82L23 9 12 3zm4 14c0 2.21-1.79 4-4 4s-4-1.79-4-4v-3.27l4 2.18 4-2.18V17z"/></svg>
+          Google Scholar
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- ANALYSIS TOOLS -->
   <section>
     <div class="section-label">Open Source</div>
     <div class="section-title">Analysis Tools</div>
     <div class="repo-grid">
-
       <a href="https://github.com/mattar13/ElectroPhysiology.jl" class="repo-card fade-in" target="_blank">
         <div class="repo-header">
-          <div class="repo-name">
-            ElectroPhysiology.jl
-            <span class="lang-dot lang-julia"></span>
-          </div>
-          <span class="arrow">↗</span>
+          <div class="repo-name">ElectroPhysiology.jl <span class="lang-dot lang-julia"></span></div>
+          <span class="arrow">&#8599;</span>
         </div>
-        <div class="repo-desc">
-          Julia toolkit for loading, analyzing, and visualizing electrophysiology data at scale.
-          Supports GPU acceleration, spike sorting, burst detection, and wave propagation analysis.
-          Built to process hundreds of hours of physiological recordings.
-        </div>
+        <div class="repo-desc">Julia toolkit for loading, analyzing, and visualizing electrophysiology data at scale. Supports GPU acceleration, spike sorting, burst detection, and wave propagation analysis. Built to process hundreds of hours of physiological recordings.</div>
         <div class="repo-tags">
           <span class="tag">Julia</span>
           <span class="tag">Electrophysiology</span>
@@ -460,20 +431,12 @@
           <span class="tag">Signal Processing</span>
         </div>
       </a>
-
       <a href="https://github.com/mattar13/VascularAnalysis" class="repo-card fade-in" target="_blank">
         <div class="repo-header">
-          <div class="repo-name">
-            VascularAnalysis
-            <span class="lang-dot lang-python"></span>
-          </div>
-          <span class="arrow">↗</span>
+          <div class="repo-name">VascularAnalysis <span class="lang-dot lang-python"></span></div>
+          <span class="arrow">&#8599;</span>
         </div>
-        <div class="repo-desc">
-          Python pipeline for quantifying retinal vasculature from 3D confocal image stacks.
-          Integrates CellPose segmentation for automated tracing, producing depth-coded vessel
-          maps and feature matrices for vessel density and tortuosity.
-        </div>
+        <div class="repo-desc">Python pipeline for quantifying retinal vasculature from 3D confocal image stacks. Integrates CellPose segmentation for automated tracing, producing depth-coded vessel maps and feature matrices for vessel density and tortuosity.</div>
         <div class="repo-tags">
           <span class="tag">Python</span>
           <span class="tag">CellPose</span>
@@ -481,29 +444,19 @@
           <span class="tag">3D Imaging</span>
         </div>
       </a>
-
     </div>
   </section>
 
-  <!-- MODELING TOOLS -->
   <section>
     <div class="section-label">Open Source</div>
     <div class="section-title">Modeling Tools</div>
     <div class="repo-grid">
-
       <a href="https://github.com/mattar13/RetinalTwin.jl" class="repo-card fade-in" target="_blank">
         <div class="repo-header">
-          <div class="repo-name">
-            RetinalTwin.jl
-            <span class="lang-dot lang-julia"></span>
-          </div>
-          <span class="arrow">↗</span>
+          <div class="repo-name">RetinalTwin.jl <span class="lang-dot lang-julia"></span></div>
+          <span class="arrow">&#8599;</span>
         </div>
-        <div class="repo-desc">
-          Biophysically grounded mechanistic simulation of the vertebrate retinal neural circuit.
-          49 coupled ODEs across 10 cell types (rods, bipolars, amacrines, glia, RPE) with
-          ~197 interpretable parameters. Outputs simulated ERG waveforms comparable to clinical recordings.
-        </div>
+        <div class="repo-desc">Biophysically grounded mechanistic simulation of the vertebrate retinal neural circuit. 49 coupled ODEs across 10 cell types with ~197 interpretable parameters. Outputs simulated ERG waveforms comparable to clinical recordings.</div>
         <div class="repo-tags">
           <span class="tag">Julia</span>
           <span class="tag">ODE</span>
@@ -511,20 +464,12 @@
           <span class="tag purple">Digital Twin</span>
         </div>
       </a>
-
       <a href="https://github.com/mattar13/RetinalChaos" class="repo-card fade-in" target="_blank">
         <div class="repo-header">
-          <div class="repo-name">
-            RetinalChaos
-            <span class="lang-dot lang-julia"></span>
-          </div>
-          <span class="arrow">↗</span>
+          <div class="repo-name">RetinalChaos <span class="lang-dot lang-julia"></span></div>
+          <span class="arrow">&#8599;</span>
         </div>
-        <div class="repo-desc">
-          Computational model of cholinergic retinal wave dynamics. Differential-equation networks
-          of starburst amacrine cells predict wave generation, propagation, and direction bias.
-          Code for the 2023 Scientific Reports publication.
-        </div>
+        <div class="repo-desc">Computational model of cholinergic retinal wave dynamics. Differential-equation networks of starburst amacrine cells predict wave generation, propagation, and direction bias. Code for the 2023 Scientific Reports publication.</div>
         <div class="repo-tags">
           <span class="tag">Julia</span>
           <span class="tag">Network Models</span>
@@ -532,20 +477,12 @@
           <span class="tag purple">Published</span>
         </div>
       </a>
-
       <a href="https://github.com/mattar13/VesselDigitalTwin" class="repo-card fade-in" target="_blank">
         <div class="repo-header">
-          <div class="repo-name">
-            VesselDigitalTwin
-            <span class="lang-dot lang-python"></span>
-          </div>
-          <span class="arrow">↗</span>
+          <div class="repo-name">VesselDigitalTwin <span class="lang-dot lang-python"></span></div>
+          <span class="arrow">&#8599;</span>
         </div>
-        <div class="repo-desc">
-          Computational model of retinal vascular network formation and dynamics.
-          Agent-based tip cell dynamics coupled with PDE-based diffusion equations
-          to simulate angiogenesis and vascular remodeling.
-        </div>
+        <div class="repo-desc">Computational model of retinal vascular network formation and dynamics. Agent-based tip cell dynamics coupled with PDE-based diffusion equations to simulate angiogenesis and vascular remodeling.</div>
         <div class="repo-tags">
           <span class="tag">Python</span>
           <span class="tag">PDE</span>
@@ -553,27 +490,20 @@
           <span class="tag purple">Digital Twin</span>
         </div>
       </a>
-
     </div>
   </section>
 
-  <!-- PUBLICATION -->
   <section>
     <div class="section-label">Peer-Reviewed</div>
     <div class="section-title">Featured Publication</div>
-
     <div class="pub-card">
-      <div class="pub-meta">Scientific Reports · 2023</div>
-      <div class="pub-title">
-        Modeling cholinergic retinal waves: starburst amacrine cells shape wave generation, propagation, and direction bias
-      </div>
-      <div class="pub-authors">
-        <strong>Tarchick MJ</strong>, Clute DA, Renna JM
-      </div>
+      <div class="pub-meta">Scientific Reports &middot; 2023</div>
+      <div class="pub-title">Modeling cholinergic retinal waves: starburst amacrine cells shape wave generation, propagation, and direction bias</div>
+      <div class="pub-authors"><strong>Tarchick MJ</strong>, Clute DA, Renna JM</div>
       <div class="pub-footer">
         <div class="pub-links">
-          <a href="https://www.nature.com/articles/s41598-023-29572-2" class="pub-link primary" target="_blank">Paper →</a>
-          <a href="https://github.com/mattar13/RetinalChaos" class="pub-link" target="_blank">Code →</a>
+          <a href="https://www.nature.com/articles/s41598-023-29572-2" class="pub-link primary" target="_blank">Paper &#8599;</a>
+          <a href="https://github.com/mattar13/RetinalChaos" class="pub-link" target="_blank">Code &#8599;</a>
         </div>
         <div class="repo-tags">
           <span class="tag">Retinal Waves</span>
@@ -582,14 +512,404 @@
         </div>
       </div>
     </div>
-
   </section>
 
   <footer>
-    <p>Matthew J. Tarchick, Ph.D. · Berkeley, CA · Built with intention</p>
+    <p>Matthew J. Tarchick, Ph.D. &middot; Berkeley, CA &middot; Built with intention</p>
   </footer>
 
 </div>
+
+<script>
+(function() {
+  const canvas = document.getElementById('neuro-canvas');
+  const ctx = canvas.getContext('2d');
+  const header = canvas.parentElement;
+
+  function resize() {
+    canvas.width = header.offsetWidth;
+    canvas.height = header.offsetHeight;
+  }
+  resize();
+
+  const W = () => canvas.width;
+  const H = () => canvas.height;
+  const SPLIT = 0.52;
+  const BINARY_COLS = 28;
+  const TRAIL_LEN = 28; // calcium imaging trail length
+
+  let neurons = [], signals = [], binaryStreams = [], crossSignals = [];
+  let circuitEvents = []; // occasional circuit board bursts
+  let frame = 0;
+
+  // ── NEURONS ──
+  function makeNeuron() {
+    return {
+      x: Math.random() * W() * SPLIT * 1.05,
+      y: Math.random() * H(),
+      connections: [],
+      pulse: 0,
+      fireTimer: Math.random() * 180,
+      fireInterval: 80 + Math.random() * 160
+    };
+  }
+
+  function initNeurons() {
+    neurons = Array.from({ length: 18 }, makeNeuron);
+    neurons.forEach((n, i) => {
+      neurons.forEach((m, j) => {
+        if (i === j) return;
+        const dx = n.x - m.x, dy = n.y - m.y;
+        if (Math.sqrt(dx*dx + dy*dy) < W() * 0.22 && n.connections.length < 3)
+          n.connections.push(j);
+      });
+    });
+  }
+
+  function fireNeuron(i) {
+    neurons[i].pulse = 1.0;
+    neurons[i].connections.forEach(j => {
+      signals.push({
+        from: i, to: j,
+        progress: 0,
+        speed: 0.013 + Math.random() * 0.013,
+        trail: [] // stores recent positions for calcium trail
+      });
+    });
+  }
+
+  // ── BINARY STREAMS ──
+  function initBinary() {
+    for (let i = 0; i < BINARY_COLS; i++) {
+      binaryStreams.push({
+        col: i, chars: [],
+        speed: 0.9 + Math.random() * 1.3,
+        spawnTimer: Math.random() * 60,
+        spawnInterval: 3 + Math.random() * 5,
+      });
+    }
+  }
+
+  function spawnChar(stream) {
+    const lastY = stream.chars.length > 0 ? stream.chars[stream.chars.length - 1].y : -10;
+    if (lastY > 14) {
+      stream.chars.push({
+        y: -10,
+        value: Math.random() > 0.5 ? '1' : '0',
+        alpha: 0.8 + Math.random() * 0.2,
+        bright: Math.random() > 0.82
+      });
+    }
+  }
+
+  // ── CROSS SIGNALS ──
+  function spawnCross() {
+    crossSignals.push({
+      y: Math.random() * H(),
+      progress: 0,
+      speed: 0.004 + Math.random() * 0.004,
+      alpha: 0.6 + Math.random() * 0.4,
+      trail: []
+    });
+  }
+
+  // ── CIRCUIT BOARD EVENTS ──
+  // Spawns a rectangular circuit trace that propagates in right-angle segments
+  function spawnCircuit() {
+    const w = W(), h = H();
+    // Start from a random neuron on the left side
+    const startNeuron = neurons[Math.floor(Math.random() * neurons.length)];
+    const sx = startNeuron ? startNeuron.x : Math.random() * w * 0.4;
+    const sy = startNeuron ? startNeuron.y : Math.random() * h;
+
+    // Build a path of right-angle segments
+    const segments = [];
+    let cx = sx, cy = sy;
+    const numSegs = 4 + Math.floor(Math.random() * 4);
+    const dirs = [[1,0],[0,1],[0,-1],[1,0],[-1,0]];
+
+    for (let i = 0; i < numSegs; i++) {
+      const dir = dirs[Math.floor(Math.random() * dirs.length)];
+      const len = 30 + Math.random() * 80;
+      const nx = cx + dir[0] * len;
+      const ny = cy + dir[1] * len;
+      // Keep within left half mostly
+      if (nx > w * 0.55 || nx < 5 || ny < 5 || ny > h - 5) break;
+      segments.push({ x1: cx, y1: cy, x2: nx, y2: ny });
+      cx = nx; cy = ny;
+    }
+
+    if (segments.length > 1) {
+      circuitEvents.push({
+        segments,
+        progress: 0,   // 0..segments.length
+        speed: 0.022 + Math.random() * 0.018,
+        alpha: 0.9,
+        fadeTimer: 0,
+        fadeDuration: 80,
+        done: false,
+        // store drawn trail for fading
+        drawnLength: 0,
+      });
+    }
+  }
+
+  // ── DRAW HELPERS ──
+  function drawNeuron(n) {
+    if (n.pulse > 0.02) {
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 14 + n.pulse * 10);
+      g.addColorStop(0, `rgba(0,212,255,${0.18 + n.pulse * 0.45})`);
+      g.addColorStop(1, 'rgba(0,212,255,0)');
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 14 + n.pulse * 10, 0, Math.PI * 2);
+      ctx.fillStyle = g; ctx.fill();
+    }
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, 2.5 + n.pulse * 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,212,255,${0.35 + n.pulse * 0.65})`;
+    ctx.fill();
+  }
+
+  function drawAxon(i, j) {
+    const a = neurons[i], b = neurons[j];
+    const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.quadraticCurveTo(cx, cy, b.x, b.y);
+    ctx.strokeStyle = 'rgba(0,212,255,0.1)';
+    ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  // Signal with calcium-imaging-style trail
+  function getSignalPos(sig, t) {
+    const a = neurons[sig.from], b = neurons[sig.to];
+    const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2;
+    return {
+      x: (1-t)*(1-t)*a.x + 2*(1-t)*t*cx + t*t*b.x,
+      y: (1-t)*(1-t)*a.y + 2*(1-t)*t*cy + t*t*b.y
+    };
+  }
+
+  function drawSignalWithTrail(sig) {
+    const pos = getSignalPos(sig, sig.progress);
+
+    // Store trail position
+    sig.trail.push({ x: pos.x, y: pos.y });
+    if (sig.trail.length > TRAIL_LEN) sig.trail.shift();
+
+    // Draw trail — fading line like calcium imaging
+    if (sig.trail.length > 1) {
+      for (let i = 1; i < sig.trail.length; i++) {
+        const frac = i / sig.trail.length;
+        ctx.beginPath();
+        ctx.moveTo(sig.trail[i-1].x, sig.trail[i-1].y);
+        ctx.lineTo(sig.trail[i].x, sig.trail[i].y);
+        // Cyan core fading to nothing
+        ctx.strokeStyle = `rgba(0,212,255,${frac * 0.65})`;
+        ctx.lineWidth = 1.5 * frac;
+        ctx.stroke();
+      }
+    }
+
+    // Leading dot glow
+    const g = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 8);
+    g.addColorStop(0, 'rgba(0,212,255,0.95)');
+    g.addColorStop(1, 'rgba(0,212,255,0)');
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+    ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(pos.x, pos.y, 2.2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+  }
+
+  // Draw circuit event — right-angle traces with a propagating dot + trail
+  function drawCircuit(ce) {
+    if (ce.segments.length === 0) return;
+
+    const totalSegs = ce.segments.length;
+    const currentSeg = Math.min(Math.floor(ce.progress), totalSegs - 1);
+    const segFrac = ce.progress - Math.floor(ce.progress);
+
+    // Draw completed segments (fading)
+    for (let i = 0; i < currentSeg; i++) {
+      const s = ce.segments[i];
+      ctx.beginPath();
+      ctx.moveTo(s.x1, s.y1);
+      ctx.lineTo(s.x2, s.y2);
+      ctx.strokeStyle = `rgba(123,97,255,${ce.alpha * 0.5})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Node dot at corners
+      ctx.beginPath();
+      ctx.arc(s.x2, s.y2, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(123,97,255,${ce.alpha * 0.7})`;
+      ctx.fill();
+    }
+
+    // Draw current segment partially
+    const s = ce.segments[currentSeg];
+    const px = s.x1 + (s.x2 - s.x1) * segFrac;
+    const py = s.y1 + (s.y2 - s.y1) * segFrac;
+
+    ctx.beginPath();
+    ctx.moveTo(s.x1, s.y1);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = `rgba(123,97,255,${ce.alpha * 0.8})`;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Leading dot with trail
+    if (!ce.dotTrail) ce.dotTrail = [];
+    ce.dotTrail.push({ x: px, y: py });
+    if (ce.dotTrail.length > 20) ce.dotTrail.shift();
+
+    // Trail
+    for (let i = 1; i < ce.dotTrail.length; i++) {
+      const frac = i / ce.dotTrail.length;
+      ctx.beginPath();
+      ctx.moveTo(ce.dotTrail[i-1].x, ce.dotTrail[i-1].y);
+      ctx.lineTo(ce.dotTrail[i].x, ce.dotTrail[i].y);
+      ctx.strokeStyle = `rgba(180,140,255,${frac * ce.alpha * 0.5})`;
+      ctx.lineWidth = 2 * frac;
+      ctx.stroke();
+    }
+
+    // Leading dot
+    const dg = ctx.createRadialGradient(px, py, 0, px, py, 7);
+    dg.addColorStop(0, `rgba(180,140,255,${ce.alpha})`);
+    dg.addColorStop(1, 'rgba(123,97,255,0)');
+    ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2);
+    ctx.fillStyle = dg; ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${ce.alpha * 0.9})`; ctx.fill();
+  }
+
+  // ── MAIN LOOP ──
+  function draw() {
+    const w = W(), h = H();
+    ctx.clearRect(0, 0, w, h);
+
+    // Transition shimmer
+    const tz = ctx.createLinearGradient(w*(SPLIT-0.2), 0, w*(SPLIT+0.12), 0);
+    tz.addColorStop(0, 'rgba(0,212,255,0)');
+    tz.addColorStop(0.5, 'rgba(0,212,255,0.025)');
+    tz.addColorStop(1, 'rgba(123,97,255,0)');
+    ctx.fillStyle = tz; ctx.fillRect(0, 0, w, h);
+
+    // Axons
+    neurons.forEach((n, i) => n.connections.forEach(j => drawAxon(i, j)));
+
+    // Neurons
+    neurons.forEach((n, i) => {
+      n.pulse = Math.max(0, n.pulse - 0.02);
+      n.fireTimer++;
+      if (n.fireTimer > n.fireInterval) {
+        n.fireTimer = 0;
+        n.fireInterval = 80 + Math.random() * 160;
+        fireNeuron(i);
+        // ~1 in 5 fires spawns a circuit event
+        if (Math.random() < 0.2) spawnCircuit();
+      }
+      drawNeuron(n);
+    });
+
+    // Signals with calcium trails
+    signals = signals.filter(sig => {
+      sig.progress += sig.speed;
+      if (sig.progress >= 1) {
+        neurons[sig.to].pulse = Math.min(1, neurons[sig.to].pulse + 0.65);
+        return false;
+      }
+      drawSignalWithTrail(sig);
+      return true;
+    });
+
+    // Circuit events
+    circuitEvents = circuitEvents.filter(ce => {
+      if (!ce.done) {
+        ce.progress += ce.speed;
+        if (ce.progress >= ce.segments.length) {
+          ce.done = true;
+        }
+      } else {
+        ce.alpha -= 1 / ce.fadeDuration;
+        if (ce.alpha <= 0) return false;
+      }
+      drawCircuit(ce);
+      return true;
+    });
+
+    // Cross signals with trails
+    if (frame % 90 === 0) spawnCross();
+    crossSignals = crossSignals.filter(cs => {
+      cs.progress += cs.speed;
+      const x = w * (SPLIT - 0.15) + cs.progress * w * 0.32;
+      const alpha = cs.alpha * Math.sin(cs.progress * Math.PI);
+      const r = Math.round(cs.progress * 123);
+      const g2 = Math.round(212 * (1 - cs.progress));
+
+      cs.trail.push({ x, y: cs.y });
+      if (cs.trail.length > 22) cs.trail.shift();
+
+      // Trail
+      for (let i = 1; i < cs.trail.length; i++) {
+        const frac = i / cs.trail.length;
+        ctx.beginPath();
+        ctx.moveTo(cs.trail[i-1].x, cs.trail[i-1].y);
+        ctx.lineTo(cs.trail[i].x, cs.trail[i].y);
+        ctx.strokeStyle = `rgba(${r},${g2},255,${frac * alpha * 0.45})`;
+        ctx.lineWidth = 1.5 * frac;
+        ctx.stroke();
+      }
+
+      ctx.beginPath(); ctx.arc(x, cs.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g2},255,${alpha})`;
+      ctx.fill();
+      return cs.progress < 1;
+    });
+
+    // Binary cascade
+    binaryStreams.forEach((stream, idx) => {
+      stream.x = w * SPLIT + (idx / BINARY_COLS) * (w * (1 - SPLIT) * 1.0);
+      stream.spawnTimer++;
+      if (stream.spawnTimer > stream.spawnInterval) { stream.spawnTimer = 0; spawnChar(stream); }
+      stream.chars = stream.chars.filter(ch => {
+        ch.y += stream.speed;
+        if (ch.y > h + 20) return false;
+        if (ch.bright) {
+          ctx.font = 'bold 11px IBM Plex Mono, monospace';
+          ctx.fillStyle = `rgba(0,255,180,${ch.alpha})`;
+        } else {
+          ctx.font = '10px IBM Plex Mono, monospace';
+          ctx.fillStyle = `rgba(123,97,255,${ch.alpha * 0.65})`;
+        }
+        ctx.fillText(ch.value, stream.x, ch.y);
+        return true;
+      });
+    });
+
+    // Edge vignettes
+    const lv = ctx.createLinearGradient(0, 0, w*0.08, 0);
+    lv.addColorStop(0, 'rgba(8,12,16,0.95)'); lv.addColorStop(1, 'rgba(8,12,16,0)');
+    ctx.fillStyle = lv; ctx.fillRect(0, 0, w*0.1, h);
+    const rv = ctx.createLinearGradient(w*0.92, 0, w, 0);
+    rv.addColorStop(0, 'rgba(8,12,16,0)'); rv.addColorStop(1, 'rgba(8,12,16,0.9)');
+    ctx.fillStyle = rv; ctx.fillRect(w*0.9, 0, w*0.1, h);
+
+    frame++;
+    requestAnimationFrame(draw);
+  }
+
+  function init() {
+    neurons = []; signals = []; binaryStreams = []; crossSignals = []; circuitEvents = [];
+    initNeurons();
+    initBinary();
+  }
+
+  init();
+  draw();
+  window.addEventListener('resize', () => { resize(); init(); });
+})();
+</script>
 
 </body>
 </html>
