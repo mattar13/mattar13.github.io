@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matthew Tarchick, Ph.D.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --surface: #0d1117;
+    --surface2: #111820;
+    --border: #1e2d3d;
+    --accent: #00d4ff;
+    --accent2: #7b61ff;
+    --green: #39d353;
+    --text: #cdd9e5;
+    --muted: #768390;
+    --dim: #444c56;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-tag {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-tag::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .name-accent {
+    color: var(--accent);
+  }
+
+  .degree {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    letter-spacing: 0.05em;
+  }
+
+  .bio {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+    max-width: 620px;
+    margin-bottom: 32px;
+  }
+
+  .bio strong {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .link-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+
+  .link-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0, 212, 255, 0.05);
+  }
+
+  .link-pill svg { width: 14px; height: 14px; }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 60px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 32px;
+  }
+
+  /* ── REPO CARDS ── */
+  .repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+  }
+
+  .repo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .repo-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .repo-card:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    background: var(--surface2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .repo-card:hover::before { opacity: 1; }
+
+  .repo-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .repo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .repo-name .lang-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  .lang-julia { background: #a270ba; }
+  .lang-python { background: #3572A5; }
+
+  .arrow {
+    color: var(--dim);
+    font-size: 14px;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .repo-card:hover .arrow {
+    color: var(--accent);
+    transform: translate(2px, -2px);
+  }
+
+  .repo-desc {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .repo-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .tag {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    background: rgba(0, 212, 255, 0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+  }
+
+  .tag.purple {
+    background: rgba(123, 97, 255, 0.08);
+    color: var(--accent2);
+    border-color: rgba(123, 97, 255, 0.15);
+  }
+
+  /* ── PUBLICATION ── */
+  .pub-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pub-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--accent));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .pub-card:hover {
+    border-color: rgba(57, 211, 83, 0.3);
+    background: var(--surface2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .pub-card:hover::before { opacity: 1; }
+
+  .pub-meta {
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pub-meta::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+
+  .pub-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .pub-authors {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .pub-authors strong {
+    color: var(--text);
+  }
+
+  .pub-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pub-links {
+    display: flex;
+    gap: 10px;
+  }
+
+  .pub-link {
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .pub-link:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .pub-link.primary {
+    background: rgba(57, 211, 83, 0.1);
+    border-color: rgba(57, 211, 83, 0.3);
+    color: var(--green);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in:nth-child(1) { animation-delay: 0.05s; }
+  .fade-in:nth-child(2) { animation-delay: 0.12s; }
+  .fade-in:nth-child(3) { animation-delay: 0.19s; }
+  .fade-in:nth-child(4) { animation-delay: 0.26s; }
+
+  @media (max-width: 600px) {
+    .repo-grid { grid-template-columns: 1fr; }
+    header { padding: 50px 0 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">Computational Neuroscience</div>
+    <h1>Matthew<br><span class="name-accent">Tarchick</span></h1>
+    <div class="degree">Ph.D. · Integrated Bioscience · UC Berkeley → University of Akron</div>
+    <p class="bio">
+      I build the hardware to collect neural data and the software to model it.
+      My work sits at the intersection of <strong>retinal physiology</strong>, <strong>biophysical modeling</strong>,
+      and <strong>computational neuroscience</strong> — from patented electrophysiology devices
+      to ODE networks of retinal circuit dynamics. Currently working on foundation models
+      of neural population activity.
+    </p>
+    <div class="links">
+      <a href="https://github.com/mattar13" class="link-pill" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        github.com/mattar13
+      </a>
+      <a href="mailto:mtarchick13@gmail.com" class="link-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        mtarchick13@gmail.com
+      </a>
+      <a href="https://scholar.google.com/citations?user=YOUR_ID" class="link-pill" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.21 1.79 4 4 4s4-1.79 4-4v-4.27l2-1.09V17h2v-5.82L23 9 12 3zm4 14c0 2.21-1.79 4-4 4s-4-1.79-4-4v-3.27l4 2.18 4-2.18V17z"/></svg>
+        Google Scholar
+      </a>
+    </div>
+  </header>
+
+  <!-- ANALYSIS TOOLS -->
+  <section>
+    <div class="section-label">Open Source</div>
+    <div class="section-title">Analysis Tools</div>
+    <div class="repo-grid">
+
+      <a href="https://github.com/mattar13/ElectroPhysiology.jl" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">
+            ElectroPhysiology.jl
+            <span class="lang-dot lang-julia"></span>
+          </div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="repo-desc">
+          Julia toolkit for loading, analyzing, and visualizing electrophysiology data at scale.
+          Supports GPU acceleration, spike sorting, burst detection, and wave propagation analysis.
+          Built to process hundreds of hours of physiological recordings.
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Julia</span>
+          <span class="tag">Electrophysiology</span>
+          <span class="tag">GPU</span>
+          <span class="tag">Signal Processing</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/mattar13/VascularAnalysis" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">
+            VascularAnalysis
+            <span class="lang-dot lang-python"></span>
+          </div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="repo-desc">
+          Python pipeline for quantifying retinal vasculature from 3D confocal image stacks.
+          Integrates CellPose segmentation for automated tracing, producing depth-coded vessel
+          maps and feature matrices for vessel density and tortuosity.
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Python</span>
+          <span class="tag">CellPose</span>
+          <span class="tag">Computer Vision</span>
+          <span class="tag">3D Imaging</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- MODELING TOOLS -->
+  <section>
+    <div class="section-label">Open Source</div>
+    <div class="section-title">Modeling Tools</div>
+    <div class="repo-grid">
+
+      <a href="https://github.com/mattar13/RetinalTwin.jl" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">
+            RetinalTwin.jl
+            <span class="lang-dot lang-julia"></span>
+          </div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="repo-desc">
+          Biophysically grounded mechanistic simulation of the vertebrate retinal neural circuit.
+          49 coupled ODEs across 10 cell types (rods, bipolars, amacrines, glia, RPE) with
+          ~197 interpretable parameters. Outputs simulated ERG waveforms comparable to clinical recordings.
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Julia</span>
+          <span class="tag">ODE</span>
+          <span class="tag">Biophysics</span>
+          <span class="tag purple">Digital Twin</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/mattar13/RetinalChaos" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">
+            RetinalChaos
+            <span class="lang-dot lang-julia"></span>
+          </div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="repo-desc">
+          Computational model of cholinergic retinal wave dynamics. Differential-equation networks
+          of starburst amacrine cells predict wave generation, propagation, and direction bias.
+          Code for the 2023 Scientific Reports publication.
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Julia</span>
+          <span class="tag">Network Models</span>
+          <span class="tag">Retinal Waves</span>
+          <span class="tag purple">Published</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/mattar13/VesselDigitalTwin" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">
+            VesselDigitalTwin
+            <span class="lang-dot lang-python"></span>
+          </div>
+          <span class="arrow">↗</span>
+        </div>
+        <div class="repo-desc">
+          Computational model of retinal vascular network formation and dynamics.
+          Agent-based tip cell dynamics coupled with PDE-based diffusion equations
+          to simulate angiogenesis and vascular remodeling.
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Python</span>
+          <span class="tag">PDE</span>
+          <span class="tag">Agent-Based</span>
+          <span class="tag purple">Digital Twin</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- PUBLICATION -->
+  <section>
+    <div class="section-label">Peer-Reviewed</div>
+    <div class="section-title">Featured Publication</div>
+
+    <a href="https://www.nature.com/articles/s41598-023-29572-2" class="pub-card" target="_blank">
+      <div class="pub-meta">Scientific Reports · 2023</div>
+      <div class="pub-title">
+        Modeling cholinergic retinal waves: starburst amacrine cells shape wave generation, propagation, and direction bias
+      </div>
+      <div class="pub-authors">
+        <strong>Tarchick MJ</strong>, Clute DA, Renna JM
+      </div>
+      <div class="pub-footer">
+        <div class="pub-links">
+          <a href="https://www.nature.com/articles/s41598-023-29572-2" class="pub-link primary" onclick="event.stopPropagation()">Paper →</a>
+          <a href="https://github.com/mattar13/RetinalChaos" class="pub-link" onclick="event.stopPropagation()">Code →</a>
+        </div>
+        <div class="repo-tags">
+          <span class="tag">Retinal Waves</span>
+          <span class="tag">Computational Model</span>
+          <span class="tag">ODE</span>
+        </div>
+      </div>
+    </a>
+
+  </section>
+
+  <footer>
+    <p>Matthew J. Tarchick, Ph.D. · Berkeley, CA · Built with intention</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
