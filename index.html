@@ -521,14 +521,15 @@
 </div>
 
 <script>
+window.addEventListener('load', function() {
 (function() {
   const canvas = document.getElementById('neuro-canvas');
   const ctx = canvas.getContext('2d');
   const header = canvas.parentElement;
 
   function resize() {
-    canvas.width = header.offsetWidth;
-    canvas.height = header.offsetHeight;
+    canvas.width = header.offsetWidth || document.body.offsetWidth || 900;
+    canvas.height = header.offsetHeight || 400;
   }
   resize();
 
@@ -932,6 +933,7 @@
   draw();
   window.addEventListener('resize', () => { resize(); init(); });
 })();
+}); // end window.load
 </script>
 
 </body>
