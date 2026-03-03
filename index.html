@@ -150,6 +150,80 @@
 
   .link-pill svg { width: 14px; height: 14px; flex-shrink: 0; }
 
+  /* ── WHAT I DO VIGNETTES ── */
+  .section-intro {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .intro-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .intro-label::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--muted);
+  }
+
+  .vignette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .vignette {
+    background: var(--surface);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .vignette:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+  }
+
+  .vignette-number {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    margin-bottom: 10px;
+  }
+
+  .vignette-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .vignette-title .vignette-accent { color: var(--accent); }
+
+  .vignette-body {
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    .vignette-grid { grid-template-columns: 1fr; }
+  }
+
   /* ── SECTIONS ── */
   section {
     padding: 64px 0;
@@ -556,7 +630,7 @@
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('load', function() {
 (function() {
   const canvas = document.getElementById('neuro-canvas');
