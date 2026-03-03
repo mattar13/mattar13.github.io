@@ -405,26 +405,48 @@
     <h1>Matthew<br><span class="name-accent">Tarchick</span></h1>
     <div class="degree">Ph.D. &middot; Integrated Bioscience &middot; University of Akron &rarr; UC Berkeley</div>
     <p class="bio">
-      Is a neuron a biological computer? Can a model be a neuron? Everytime I have made a recording from neural tissue I ask myself these questions. 
-      The retina is where I look for answers. Stimulus goes in, spike comes out 
-      The circuitry between them is compact, accessible, and exquisitely mappable. 
-      If you can build a model that actually behaves like a retina, you've proven something real about how neural systems compute. 
-      My current goals are to constrain models further in reality 
-      working with multi-omics and spatial transcriptomics datasets to pin parameters to biology, not just math.
+      Is a neuron a biological computer? Can a model be a neuron? Every time I make a recording from neural tissue, I ask myself these questions.<br><br>
+      The retina is where I look for answers. Stimulus goes in, spike comes out. The circuitry between them is compact, accessible, and exquisitely mappable. If you can build a model that actually behaves like a retina, you've proven something real about how neural systems compute.<br><br>
+      My current goal is to close the loop: constrain biophysical models with multi-omics and spatial transcriptomics so the simulation and the tissue become harder to tell apart.
     </p>
     <div class="links">
       <a href="https://github.com/mattar13" class="link-pill" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
         github.com/mattar13
       </a>
-      <a href="mailto:mtarchick13@gmail.com" class="link-pill">
+      <a href="/cdn-cgi/l/email-protection#68051c091a0b00010b03595b280f05090104460b0705" class="link-pill">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        mtarchick13@gmail.com
+        <span class="__cf_email__" data-cfemail="7c11081d0e1f14151f174d4f3c1b111d1510521f1311">[email&#160;protected]</span>
       </a>
       <a href="https://scholar.google.com/citations?user=YOUR_ID" class="link-pill" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.21 1.79 4 4 4s4-1.79 4-4v-4.27l2-1.09V17h2v-5.82L23 9 12 3zm4 14c0 2.21-1.79 4-4 4s-4-1.79-4-4v-3.27l4 2.18 4-2.18V17z"/></svg>
         Google Scholar
       </a>
+    </div>
+
+    <div class="section-intro">
+      <div class="intro-label">What I Do</div>
+      <div class="vignette-grid">
+
+        <div class="vignette">
+          <div class="vignette-number">01</div>
+          <div class="vignette-title"><span class="vignette-accent">Record</span> from living tissue</div>
+          <div class="vignette-body">Patch-clamp, ex vivo ERG, calcium imaging, two-photon microscopy. I generate the ground truth data that models have to explain. Over 1,000 retinal recordings and 400+ tissue samples across disease models, development studies, and device validation.</div>
+        </div>
+
+        <div class="vignette">
+          <div class="vignette-number">02</div>
+          <div class="vignette-title"><span class="vignette-accent">Model</span> what the recording shows</div>
+          <div class="vignette-body">ODE networks, biophysical simulations, reaction-diffusion PDEs. The model has to reproduce the data — or it doesn't count. Simulations of retinal waves, dopamine dynamics, and vascular remodeling, each constrained by experimental recordings from the same tissue.</div>
+        </div>
+
+        <div class="vignette">
+          <div class="vignette-number">03</div>
+          <div class="vignette-title"><span class="vignette-accent">Build</span> the tools that make both scale</div>
+          <div class="vignette-body">Python pipelines, Julia toolkits, GPU-accelerated analysis. The experiment generates more data than anyone can hand-annotate — so the software has to do it. ElectroPhysiology.jl and VascularAnalysis are the infrastructure the biology runs on.</div>
+        </div>
+
+      </div>
     </div>
   </header>
 
