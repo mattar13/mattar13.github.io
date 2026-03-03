@@ -617,24 +617,28 @@
   // Spawns a rectangular circuit trace that propagates in right-angle segments
   function spawnCircuit() {
     const w = W(), h = H();
-    // Start from a random neuron on the left side
     const startNeuron = neurons[Math.floor(Math.random() * neurons.length)];
     const sx = startNeuron ? startNeuron.x : Math.random() * w * 0.4;
     const sy = startNeuron ? startNeuron.y : Math.random() * h;
 
-    // Build a path of right-angle segments
     const segments = [];
     let cx = sx, cy = sy;
-    const numSegs = 4 + Math.floor(Math.random() * 4);
-    const dirs = [[1,0],[0,1],[0,-1],[1,0],[-1,0]];
+    const numSegs = 5 + Math.floor(Math.random() * 5);
+    // Strict axis directions only — horizontal or vertical, alternating for PCB feel
+    const HORIZ = [[1,0],[-1,0]];
+    const VERT  = [[0,1],[0,-1]];
+    let useHoriz = Math.random() > 0.5;
 
     for (let i = 0; i < numSegs; i++) {
-      const dir = dirs[Math.floor(Math.random() * dirs.length)];
-      const len = 30 + Math.random() * 80;
+      // Alternate between horizontal and vertical for grid-locked PCB look
+      const pool = useHoriz ? HORIZ : VERT;
+      useHoriz = !useHoriz;
+      const dir = pool[Math.floor(Math.random() * pool.length)];
+      // Fixed segment lengths: 20, 40, or 60px — keeps it crisp and square
+      const len = [25, 40, 55, 70][Math.floor(Math.random() * 4)];
       const nx = cx + dir[0] * len;
       const ny = cy + dir[1] * len;
-      // Keep within left half mostly
-      if (nx > w * 0.55 || nx < 5 || ny < 5 || ny > h - 5) break;
+      if (nx > w * 0.58 || nx < 5 || ny < 5 || ny > h - 5) break;
       segments.push({ x1: cx, y1: cy, x2: nx, y2: ny });
       cx = nx; cy = ny;
     }
@@ -642,14 +646,12 @@
     if (segments.length > 1) {
       circuitEvents.push({
         segments,
-        progress: 0,   // 0..segments.length
-        speed: 0.022 + Math.random() * 0.018,
-        alpha: 0.9,
-        fadeTimer: 0,
-        fadeDuration: 80,
+        progress: 0,
+        speed: 0.025 + Math.random() * 0.02,
+        alpha: 1.0,
+        fadeDuration: 140,
         done: false,
-        // store drawn trail for fading
-        drawnLength: 0,
+        dotTrail: [],
       });
     }
   }
@@ -721,7 +723,7 @@
     ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
   }
 
-  // Draw circuit event — right-angle traces with a propagating dot + trail
+  // Draw circuit event — white PCB traces with propagating dot + trail
   function drawCircuit(ce) {
     if (ce.segments.length === 0) return;
 
@@ -729,58 +731,79 @@
     const currentSeg = Math.min(Math.floor(ce.progress), totalSegs - 1);
     const segFrac = ce.progress - Math.floor(ce.progress);
 
-    // Draw completed segments (fading)
+    // Completed segments — bright white with subtle glow
     for (let i = 0; i < currentSeg; i++) {
       const s = ce.segments[i];
+      // Glow pass
       ctx.beginPath();
       ctx.moveTo(s.x1, s.y1);
       ctx.lineTo(s.x2, s.y2);
-      ctx.strokeStyle = `rgba(123,97,255,${ce.alpha * 0.5})`;
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = `rgba(180,220,255,${ce.alpha * 0.25})`;
+      ctx.lineWidth = 4;
       ctx.stroke();
-      // Node dot at corners
+      // Core white line
       ctx.beginPath();
-      ctx.arc(s.x2, s.y2, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(123,97,255,${ce.alpha * 0.7})`;
+      ctx.moveTo(s.x1, s.y1);
+      ctx.lineTo(s.x2, s.y2);
+      ctx.strokeStyle = `rgba(255,255,255,${ce.alpha * 0.85})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      // Corner node dot
+      ctx.beginPath();
+      ctx.arc(s.x2, s.y2, 3, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${ce.alpha * 0.9})`;
       ctx.fill();
+      // Corner glow
+      const ng = ctx.createRadialGradient(s.x2, s.y2, 0, s.x2, s.y2, 7);
+      ng.addColorStop(0, `rgba(180,220,255,${ce.alpha * 0.4})`);
+      ng.addColorStop(1, 'rgba(180,220,255,0)');
+      ctx.beginPath(); ctx.arc(s.x2, s.y2, 7, 0, Math.PI * 2);
+      ctx.fillStyle = ng; ctx.fill();
     }
 
-    // Draw current segment partially
+    // Current segment — partially drawn
     const s = ce.segments[currentSeg];
     const px = s.x1 + (s.x2 - s.x1) * segFrac;
     const py = s.y1 + (s.y2 - s.y1) * segFrac;
 
+    // Glow pass
     ctx.beginPath();
     ctx.moveTo(s.x1, s.y1);
     ctx.lineTo(px, py);
-    ctx.strokeStyle = `rgba(123,97,255,${ce.alpha * 0.8})`;
+    ctx.strokeStyle = `rgba(180,220,255,${ce.alpha * 0.3})`;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    // Core
+    ctx.beginPath();
+    ctx.moveTo(s.x1, s.y1);
+    ctx.lineTo(px, py);
+    ctx.strokeStyle = `rgba(255,255,255,${ce.alpha * 0.95})`;
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Leading dot with trail
-    if (!ce.dotTrail) ce.dotTrail = [];
+    // Leading dot trail
     ce.dotTrail.push({ x: px, y: py });
-    if (ce.dotTrail.length > 20) ce.dotTrail.shift();
+    if (ce.dotTrail.length > 18) ce.dotTrail.shift();
 
-    // Trail
     for (let i = 1; i < ce.dotTrail.length; i++) {
       const frac = i / ce.dotTrail.length;
       ctx.beginPath();
       ctx.moveTo(ce.dotTrail[i-1].x, ce.dotTrail[i-1].y);
       ctx.lineTo(ce.dotTrail[i].x, ce.dotTrail[i].y);
-      ctx.strokeStyle = `rgba(180,140,255,${frac * ce.alpha * 0.5})`;
-      ctx.lineWidth = 2 * frac;
+      ctx.strokeStyle = `rgba(200,230,255,${frac * ce.alpha * 0.55})`;
+      ctx.lineWidth = 2.5 * frac;
       ctx.stroke();
     }
 
-    // Leading dot
-    const dg = ctx.createRadialGradient(px, py, 0, px, py, 7);
-    dg.addColorStop(0, `rgba(180,140,255,${ce.alpha})`);
-    dg.addColorStop(1, 'rgba(123,97,255,0)');
-    ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2);
+    // Leading dot glow
+    const dg = ctx.createRadialGradient(px, py, 0, px, py, 10);
+    dg.addColorStop(0, `rgba(255,255,255,${ce.alpha * 0.9})`);
+    dg.addColorStop(0.4, `rgba(180,220,255,${ce.alpha * 0.5})`);
+    dg.addColorStop(1, 'rgba(180,220,255,0)');
+    ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2);
     ctx.fillStyle = dg; ctx.fill();
-    ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${ce.alpha * 0.9})`; ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${ce.alpha})`; ctx.fill();
   }
 
   // ── MAIN LOOP ──
@@ -806,8 +829,8 @@
         n.fireTimer = 0;
         n.fireInterval = 80 + Math.random() * 160;
         fireNeuron(i);
-        // ~1 in 5 fires spawns a circuit event
-        if (Math.random() < 0.2) spawnCircuit();
+        // ~1 in 2 fires spawns a circuit event
+        if (Math.random() < 0.5) spawnCircuit();
       }
       drawNeuron(n);
     });
