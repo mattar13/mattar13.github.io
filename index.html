@@ -550,16 +550,157 @@ window.addEventListener('load', function() {
   const W = () => canvas.width;
   const H = () => canvas.height;
 
-  // The animation now spans the full viewport
-  // Neurons spread across the left 60%, binary streams on the right 40%
   const SPLIT = 0.58;
   const BINARY_COLS = 32;
   const TRAIL_LEN = 28;
 
   let neurons = [], signals = [], binaryStreams = [], crossSignals = [];
   let circuitEvents = [];
+  // Mouse state
+  let mouse = { x: -999, y: -999 };
+  let mouseRipples = [];   // click burst rings
+  let mouseWave = null;    // transient "stimulus" node at cursor
+  let mouseMoveTimer = 0;
+  let lastMouseMove = 0;
   let frame = 0;
 
+  // ── MOUSE LISTENERS (on window so pointer-events:none on canvas is fine) ──
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    lastMouseMove = frame;
+
+    // Every 18 frames of movement, inject a transient stimulus node near cursor
+    mouseMoveTimer++;
+    if (mouseMoveTimer >= 18) {
+      mouseMoveTimer = 0;
+      injectMouseStimulus(e.clientX, e.clientY, false);
+    }
+  });
+
+  window.addEventListener('click', e => {
+    // Click: big burst + ripple rings + full chain reaction
+    spawnClickBurst(e.clientX, e.clientY);
+  });
+
+  // ── STIMULUS INJECTION ──
+  // Creates a temporary "ghost neuron" at (mx, my) and fires it toward the
+  // nearest real neurons, starting a propagation chain.
+  function injectMouseStimulus(mx, my, isClick) {
+    const strength = isClick ? 1.0 : 0.55;
+    const radius = isClick ? W() * 0.32 : W() * 0.18;
+    const maxTargets = isClick ? 4 : 2;
+
+    // Find nearest neurons within radius, sorted by distance
+    const nearby = neurons
+      .map((n, i) => ({ i, d: Math.hypot(n.x - mx, n.y - my) }))
+      .filter(o => o.d < radius)
+      .sort((a, b) => a.d - b.d)
+      .slice(0, maxTargets);
+
+    if (nearby.length === 0) {
+      // No neuron nearby — spawn a temporary ghost that fires toward the closest
+      const closest = neurons.reduce((best, n, i) => {
+        const d = Math.hypot(n.x - mx, n.y - my);
+        return d < best.d ? { i, d } : best;
+      }, { i: 0, d: Infinity });
+      nearby.push(closest);
+    }
+
+    // Pulse each found neuron and chain outward
+    nearby.forEach(({ i }) => {
+      neurons[i].pulse = Math.min(1.0, neurons[i].pulse + strength);
+      // Fire from that neuron, which cascades naturally through connections
+      chainFire(i, 0, isClick ? 4 : 2);
+    });
+
+    // Ghost ripple at cursor position propagating toward neurons
+    nearby.forEach(({ i }) => {
+      const n = neurons[i];
+      signals.push({
+        fromGhost: true,
+        gx: mx, gy: my,
+        to: i,
+        progress: 0,
+        speed: (isClick ? 0.022 : 0.016) + Math.random() * 0.01,
+        trail: [],
+        color: isClick ? [255, 200, 80] : [0, 212, 255],
+        alpha: isClick ? 1.0 : 0.7,
+      });
+    });
+
+    if (isClick) spawnCircuitAt(mx, my);
+  }
+
+  // Recursive chain fire with depth limit to prevent infinite loops
+  function chainFire(neuronIdx, depth, maxDepth) {
+    if (depth >= maxDepth) return;
+    const n = neurons[neuronIdx];
+    n.connections.forEach(j => {
+      const delay = depth * 8 + Math.random() * 6; // stagger in frames
+      setTimeout(() => {
+        neurons[j].pulse = Math.min(1.0, neurons[j].pulse + (0.8 - depth * 0.18));
+        signals.push({
+          from: neuronIdx, to: j,
+          progress: 0,
+          speed: 0.012 + Math.random() * 0.012,
+          trail: [],
+          color: null, // default cyan
+          alpha: 1.0,
+        });
+        if (depth + 1 < maxDepth) chainFire(j, depth + 1, maxDepth);
+      }, delay * (1000 / 60));
+    });
+  }
+
+  // ── CLICK BURST ──
+  function spawnClickBurst(mx, my) {
+    // Expanding ring ripples
+    for (let r = 0; r < 3; r++) {
+      mouseRipples.push({
+        x: mx, y: my,
+        radius: 4,
+        maxRadius: 80 + r * 40,
+        alpha: 0.8 - r * 0.18,
+        speed: 2.2 + r * 0.8,
+        color: r === 0 ? [255, 200, 80] : r === 1 ? [0, 212, 255] : [123, 97, 255],
+      });
+    }
+    injectMouseStimulus(mx, my, true);
+  }
+
+  // ── CIRCUIT SPAWN FROM ARBITRARY POINT ──
+  function spawnCircuitAt(sx, sy) {
+    const w = W(), h = H();
+    const segments = [];
+    let cx = sx, cy = sy;
+    const numSegs = 6 + Math.floor(Math.random() * 5);
+    const HORIZ = [[1,0],[-1,0]];
+    const VERT  = [[0,1],[0,-1]];
+    let useHoriz = Math.random() > 0.5;
+    for (let i = 0; i < numSegs; i++) {
+      const pool = useHoriz ? HORIZ : VERT;
+      useHoriz = !useHoriz;
+      const dir = pool[Math.floor(Math.random() * pool.length)];
+      const len = [25, 40, 55, 70][Math.floor(Math.random() * 4)];
+      const nx = cx + dir[0] * len;
+      const ny = cy + dir[1] * len;
+      if (nx > w - 10 || nx < 10 || ny < 10 || ny > h - 10) break;
+      segments.push({ x1: cx, y1: cy, x2: nx, y2: ny });
+      cx = nx; cy = ny;
+    }
+    if (segments.length > 1) {
+      circuitEvents.push({
+        segments, progress: 0,
+        speed: 0.032 + Math.random() * 0.02,
+        alpha: 1.0, fadeDuration: 120,
+        done: false, dotTrail: [],
+        hot: true, // click-spawned circuits are brighter
+      });
+    }
+  }
+
+  // ── NEURON INIT ──
   function makeNeuron() {
     return {
       x: Math.random() * W() * SPLIT,
@@ -590,11 +731,14 @@ window.addEventListener('load', function() {
         from: i, to: j,
         progress: 0,
         speed: 0.012 + Math.random() * 0.012,
-        trail: []
+        trail: [],
+        color: null,
+        alpha: 1.0,
       });
     });
   }
 
+  // ── BINARY STREAMS ──
   function initBinary() {
     binaryStreams = [];
     for (let i = 0; i < BINARY_COLS; i++) {
@@ -634,39 +778,10 @@ window.addEventListener('load', function() {
     const startNeuron = neurons[Math.floor(Math.random() * neurons.length)];
     const sx = startNeuron ? startNeuron.x : Math.random() * w * 0.5;
     const sy = startNeuron ? startNeuron.y : Math.random() * h;
-
-    const segments = [];
-    let cx = sx, cy = sy;
-    const numSegs = 5 + Math.floor(Math.random() * 5);
-    const HORIZ = [[1,0],[-1,0]];
-    const VERT  = [[0,1],[0,-1]];
-    let useHoriz = Math.random() > 0.5;
-
-    for (let i = 0; i < numSegs; i++) {
-      const pool = useHoriz ? HORIZ : VERT;
-      useHoriz = !useHoriz;
-      const dir = pool[Math.floor(Math.random() * pool.length)];
-      const len = [25, 40, 55, 70][Math.floor(Math.random() * 4)];
-      const nx = cx + dir[0] * len;
-      const ny = cy + dir[1] * len;
-      if (nx > w * 0.65 || nx < 5 || ny < 5 || ny > h - 5) break;
-      segments.push({ x1: cx, y1: cy, x2: nx, y2: ny });
-      cx = nx; cy = ny;
-    }
-
-    if (segments.length > 1) {
-      circuitEvents.push({
-        segments,
-        progress: 0,
-        speed: 0.025 + Math.random() * 0.02,
-        alpha: 1.0,
-        fadeDuration: 140,
-        done: false,
-        dotTrail: [],
-      });
-    }
+    spawnCircuitAt(sx, sy);
   }
 
+  // ── DRAW HELPERS ──
   function drawNeuron(n) {
     if (n.pulse > 0.02) {
       const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 14 + n.pulse * 10);
@@ -692,7 +807,62 @@ window.addEventListener('load', function() {
     ctx.lineWidth = 1; ctx.stroke();
   }
 
+  // Draw hover proximity highlight — neurons near cursor glow subtly
+  function drawProximityGlow() {
+    const hoverRadius = 120;
+    neurons.forEach(n => {
+      const d = Math.hypot(n.x - mouse.x, n.y - mouse.y);
+      if (d < hoverRadius) {
+        const strength = 1 - d / hoverRadius;
+        const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 20 + strength * 16);
+        g.addColorStop(0, `rgba(0,212,255,${strength * 0.22})`);
+        g.addColorStop(1, 'rgba(0,212,255,0)');
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 20 + strength * 16, 0, Math.PI * 2);
+        ctx.fillStyle = g; ctx.fill();
+        // Draw faint axon-like line from cursor to neuron
+        ctx.beginPath();
+        ctx.moveTo(mouse.x, mouse.y);
+        ctx.lineTo(n.x, n.y);
+        ctx.strokeStyle = `rgba(0,212,255,${strength * 0.12})`;
+        ctx.lineWidth = 1; ctx.stroke();
+      }
+    });
+    // Cursor dot
+    if (mouse.x > 0) {
+      const cg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 12);
+      cg.addColorStop(0, 'rgba(0,212,255,0.25)');
+      cg.addColorStop(1, 'rgba(0,212,255,0)');
+      ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 12, 0, Math.PI * 2);
+      ctx.fillStyle = cg; ctx.fill();
+      ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,212,255,0.7)'; ctx.fill();
+    }
+  }
+
+  // Draw click ripple rings
+  function drawRipples() {
+    mouseRipples = mouseRipples.filter(r => {
+      r.radius += r.speed;
+      r.alpha -= r.alpha / 28;
+      if (r.alpha < 0.01 || r.radius > r.maxRadius) return false;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${r.color[0]},${r.color[1]},${r.color[2]},${r.alpha})`;
+      ctx.lineWidth = 1.5; ctx.stroke();
+      return true;
+    });
+  }
+
   function getSignalPos(sig, t) {
+    if (sig.fromGhost) {
+      // Straight line from ghost position to target neuron
+      const b = neurons[sig.to];
+      return {
+        x: sig.gx + (b.x - sig.gx) * t,
+        y: sig.gy + (b.y - sig.gy) * t,
+      };
+    }
     const a = neurons[sig.from], b = neurons[sig.to];
     const cx2 = (a.x + b.x) / 2, cy2 = (a.y + b.y) / 2;
     return {
@@ -706,21 +876,23 @@ window.addEventListener('load', function() {
     sig.trail.push({ x: pos.x, y: pos.y });
     if (sig.trail.length > TRAIL_LEN) sig.trail.shift();
 
+    const [cr, cg2, cb] = sig.color || [0, 212, 255];
+
     if (sig.trail.length > 1) {
       for (let i = 1; i < sig.trail.length; i++) {
         const frac = i / sig.trail.length;
         ctx.beginPath();
         ctx.moveTo(sig.trail[i-1].x, sig.trail[i-1].y);
         ctx.lineTo(sig.trail[i].x, sig.trail[i].y);
-        ctx.strokeStyle = `rgba(0,212,255,${frac * 0.6})`;
+        ctx.strokeStyle = `rgba(${cr},${cg2},${cb},${frac * 0.6 * (sig.alpha || 1)})`;
         ctx.lineWidth = 1.5 * frac;
         ctx.stroke();
       }
     }
 
     const g = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, 8);
-    g.addColorStop(0, 'rgba(0,212,255,0.95)');
-    g.addColorStop(1, 'rgba(0,212,255,0)');
+    g.addColorStop(0, `rgba(${cr},${cg2},${cb},${0.95 * (sig.alpha || 1)})`);
+    g.addColorStop(1, `rgba(${cr},${cg2},${cb},0)`);
     ctx.beginPath(); ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
     ctx.fillStyle = g; ctx.fill();
     ctx.beginPath(); ctx.arc(pos.x, pos.y, 2.2, 0, Math.PI * 2);
@@ -732,26 +904,22 @@ window.addEventListener('load', function() {
     const totalSegs = ce.segments.length;
     const currentSeg = Math.min(Math.floor(ce.progress), totalSegs - 1);
     const segFrac = ce.progress - Math.floor(ce.progress);
+    const hot = ce.hot;
 
     for (let i = 0; i < currentSeg; i++) {
       const s = ce.segments[i];
-      ctx.beginPath();
-      ctx.moveTo(s.x1, s.y1);
-      ctx.lineTo(s.x2, s.y2);
-      ctx.strokeStyle = `rgba(180,220,255,${ce.alpha * 0.22})`;
-      ctx.lineWidth = 4; ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(s.x1, s.y1);
-      ctx.lineTo(s.x2, s.y2);
-      ctx.strokeStyle = `rgba(255,255,255,${ce.alpha * 0.8})`;
-      ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(s.x2, s.y2, 3, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2);
+      ctx.strokeStyle = `rgba(180,220,255,${ce.alpha * (hot ? 0.3 : 0.22)})`;
+      ctx.lineWidth = hot ? 5 : 4; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2);
+      ctx.strokeStyle = `rgba(255,255,255,${ce.alpha * (hot ? 0.95 : 0.8)})`;
+      ctx.lineWidth = hot ? 2 : 1.5; ctx.stroke();
+      ctx.beginPath(); ctx.arc(s.x2, s.y2, hot ? 4 : 3, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(255,255,255,${ce.alpha * 0.85})`; ctx.fill();
-      const ng = ctx.createRadialGradient(s.x2, s.y2, 0, s.x2, s.y2, 7);
-      ng.addColorStop(0, `rgba(180,220,255,${ce.alpha * 0.35})`);
+      const ng = ctx.createRadialGradient(s.x2, s.y2, 0, s.x2, s.y2, hot ? 10 : 7);
+      ng.addColorStop(0, `rgba(${hot ? '255,200,80' : '180,220,255'},${ce.alpha * (hot ? 0.5 : 0.35)})`);
       ng.addColorStop(1, 'rgba(180,220,255,0)');
-      ctx.beginPath(); ctx.arc(s.x2, s.y2, 7, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(s.x2, s.y2, hot ? 10 : 7, 0, Math.PI * 2);
       ctx.fillStyle = ng; ctx.fill();
     }
 
@@ -770,27 +938,34 @@ window.addEventListener('load', function() {
       ctx.beginPath();
       ctx.moveTo(ce.dotTrail[i-1].x, ce.dotTrail[i-1].y);
       ctx.lineTo(ce.dotTrail[i].x, ce.dotTrail[i].y);
-      ctx.strokeStyle = `rgba(200,230,255,${frac * ce.alpha * 0.5})`;
+      ctx.strokeStyle = hot
+        ? `rgba(255,200,80,${frac * ce.alpha * 0.6})`
+        : `rgba(200,230,255,${frac * ce.alpha * 0.5})`;
       ctx.lineWidth = 2.5 * frac; ctx.stroke();
     }
 
-    const dg = ctx.createRadialGradient(px, py, 0, px, py, 10);
-    dg.addColorStop(0, `rgba(255,255,255,${ce.alpha * 0.88})`);
+    const dotColor = hot ? '255,200,80' : '255,255,255';
+    const dg = ctx.createRadialGradient(px, py, 0, px, py, hot ? 14 : 10);
+    dg.addColorStop(0, `rgba(${dotColor},${ce.alpha * 0.95})`);
     dg.addColorStop(0.4, `rgba(180,220,255,${ce.alpha * 0.45})`);
     dg.addColorStop(1, 'rgba(180,220,255,0)');
-    ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2); ctx.fillStyle = dg; ctx.fill();
-    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(px, py, hot ? 14 : 10, 0, Math.PI * 2); ctx.fillStyle = dg; ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, hot ? 3.5 : 2.5, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255,255,255,${ce.alpha})`; ctx.fill();
   }
 
+  // ── MAIN LOOP ──
   function draw() {
     const w = W(), h = H();
     ctx.clearRect(0, 0, w, h);
 
+    // Proximity glow + cursor
+    drawProximityGlow();
+
     // Axons
     neurons.forEach((n, i) => n.connections.forEach(j => drawAxon(i, j)));
 
-    // Neurons
+    // Neurons — autonomous firing
     neurons.forEach((n, i) => {
       n.pulse = Math.max(0, n.pulse - 0.018);
       n.fireTimer++;
@@ -803,11 +978,16 @@ window.addEventListener('load', function() {
       drawNeuron(n);
     });
 
-    // Signals
+    // Signals (autonomous + mouse-triggered)
     signals = signals.filter(sig => {
       sig.progress += sig.speed;
       if (sig.progress >= 1) {
-        neurons[sig.to].pulse = Math.min(1, neurons[sig.to].pulse + 0.6);
+        if (!sig.fromGhost) {
+          neurons[sig.to].pulse = Math.min(1, neurons[sig.to].pulse + 0.6);
+        } else {
+          // ghost signal arrives: fully pulse the target
+          neurons[sig.to].pulse = Math.min(1, neurons[sig.to].pulse + 0.85);
+        }
         return false;
       }
       drawSignalWithTrail(sig);
@@ -826,6 +1006,9 @@ window.addEventListener('load', function() {
       drawCircuit(ce);
       return true;
     });
+
+    // Click ripples
+    drawRipples();
 
     // Cross signals
     if (frame % 100 === 0) spawnCross();
@@ -850,7 +1033,7 @@ window.addEventListener('load', function() {
       return cs.progress < 1;
     });
 
-    // Binary cascade — right 40% of viewport
+    // Binary cascade
     binaryStreams.forEach((stream, idx) => {
       stream.x = w * SPLIT + (idx / BINARY_COLS) * (w * (1 - SPLIT) * 0.98);
       stream.spawnTimer++;
@@ -877,7 +1060,6 @@ window.addEventListener('load', function() {
     const rv = ctx.createLinearGradient(w * 0.93, 0, w, 0);
     rv.addColorStop(0, 'rgba(8,12,16,0)'); rv.addColorStop(1, 'rgba(8,12,16,0.9)');
     ctx.fillStyle = rv; ctx.fillRect(w * 0.92, 0, w * 0.08, h);
-    // Top + bottom vignettes so it blends into page edges
     const tv = ctx.createLinearGradient(0, 0, 0, h * 0.06);
     tv.addColorStop(0, 'rgba(8,12,16,0.7)'); tv.addColorStop(1, 'rgba(8,12,16,0)');
     ctx.fillStyle = tv; ctx.fillRect(0, 0, w, h * 0.08);
@@ -890,7 +1072,8 @@ window.addEventListener('load', function() {
   }
 
   function init() {
-    neurons = []; signals = []; binaryStreams = []; crossSignals = []; circuitEvents = [];
+    neurons = []; signals = []; binaryStreams = []; crossSignals = [];
+    circuitEvents = []; mouseRipples = [];
     initNeurons();
     initBinary();
   }
