@@ -349,6 +349,44 @@
 
   @keyframes pulse-amber { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
+  .badge-hackathon {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    background: rgba(123, 97, 255, 0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(123, 97, 255, 0.3);
+  }
+
+  .badge-hackathon::before {
+    content: '⚡';
+    font-size: 9px;
+  }
+
+  .repo-live-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    color: var(--accent2);
+    text-decoration: none;
+    border: 1px solid rgba(123, 97, 255, 0.25);
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin-top: 4px;
+    align-self: flex-start;
+    transition: all 0.2s;
+    background: rgba(123, 97, 255, 0.06);
+  }
+
+  .repo-live-link:hover {
+    border-color: var(--accent2);
+    background: rgba(123, 97, 255, 0.14);
+  }
+
   /* ── SUB-SECTION PUB HEADER ── */
   .sub-section-label {
     font-size: 11px;
@@ -533,6 +571,23 @@
           <span class="tag">Computer Vision</span>
           <span class="tag">3D Imaging</span>
         </div>
+      </a>
+
+      <a href="https://github.com/ryanjmccall/protein-seq-to-func" class="repo-card fade-in" target="_blank">
+        <div class="repo-header">
+          <div class="repo-name">protein-seq-to-func <span class="lang-dot lang-python"></span></div>
+          <span class="arrow">&#8599;</span>
+        </div>
+        <div class="repo-desc">RAG pipeline that extracts protein sequence-to-function relationships from scientific literature and builds a queryable knowledge base. Applied to CCR chemokine receptors and their role in inflammaging. Includes a live deployed web app. Built with LlamaIndex, FAISS, FastAPI, and Nebius AI embeddings.</div>
+        <div class="repo-tags">
+          <span class="tag">Python</span>
+          <span class="tag">LlamaIndex</span>
+          <span class="tag">RAG</span>
+          <span class="tag">Proteomics</span>
+          <span class="tag purple">Longevity</span>
+          <span class="badge-hackathon">HackAging.ai 2025</span>
+        </div>
+        <a href="https://protein-seq-to-function.vercel.app/" class="repo-live-link" target="_blank" onclick="event.stopPropagation()">Live app &#8599;</a>
       </a>
     </div>
 
