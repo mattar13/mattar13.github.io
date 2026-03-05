@@ -115,6 +115,18 @@
 
   .bio strong { color: #fff; font-weight: 500; }
 
+  .bio-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .bio-link:hover {
+    color: #fff;
+    border-color: rgba(0, 212, 255, 0.8);
+  }
+
   .links { display: flex; flex-wrap: wrap; gap: 12px; }
 
   .link-pill {
@@ -168,11 +180,36 @@
     border-radius: 8px;
     padding: 22px 24px;
     transition: border-color 0.2s, background 0.2s;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
   }
 
   .vignette:hover { border-color: var(--border-hover); background: var(--surface2); }
 
-  .vignette-number { font-size: 10px; letter-spacing: 0.12em; color: var(--dim); margin-bottom: 10px; }
+  .vignette-number {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .vignette-number::after {
+    content: '↓';
+    font-size: 11px;
+    color: var(--dim);
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .vignette:hover .vignette-number::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
   .vignette-title {
     font-family: 'Syne', sans-serif;
@@ -424,8 +461,9 @@
     <div class="degree">Ph.D. &middot; Integrated Bioscience &middot; University of Akron &rarr; UC Berkeley</div>
     <p class="bio">
       Is a neuron a computer? Can we predict its behavior from the genes it expresses and the currents it carries?<br><br>
-      If the model is built from the biology up, I think we can. That means starting with what the cell actually expresses: which ion channels, in what proportions, constrained by transcriptomics and physiology together.<br><br>
-      If the model actually behaves like the tissue, then we can ask the harder question: what does failure look like? When the eye degenerates, when the circuit breaks down, can the model tell us where it went wrong and what would fix it?<br><br>
+      If the <a href="#section-modeling" class="bio-link">model</a> is built from the biology up, I think we can. That means starting with what the cell actually expresses: which ion channels, in what proportions, constrained by transcriptomics and physiology together.<br><br>
+      But first you have to <a href="#section-analysis" class="bio-link">collect</a> the data — patch-clamp recordings, calcium imaging, ERG waveforms — and then <a href="#section-analysis" class="bio-link">analyze</a> it rigorously enough to constrain the model.<br><br>
+      If the <a href="#section-modeling" class="bio-link">model</a> actually behaves like the tissue, then we can ask the harder question: what does failure look like? When the eye degenerates, when the circuit breaks down, can the <a href="#section-modeling" class="bio-link">model</a> tell us where it went wrong and what would fix it?<br><br>
       That's what I'm building toward.
     </p>
     <div class="links">
@@ -433,9 +471,9 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
         github.com/mattar13
       </a>
-      <a href="mailto:mtarchick13@gmail.com" class="link-pill">
+      <a href="/cdn-cgi/l/email-protection#4528312437262d2c262e7476052228242c296b262a28" class="link-pill">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        mtarchick13@gmail.com
+        <span class="__cf_email__" data-cfemail="fe938a9f8c9d96979d95cfcdbe99939f9792d09d9193">[email&#160;protected]</span>
       </a>
       <a href="https://scholar.google.com/citations?user=YOUR_ID" class="link-pill" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l4 2.18V17h2v-4.82l1 .55V17c0 2.21 1.79 4 4 4s4-1.79 4-4v-4.27l2-1.09V17h2v-5.82L23 9 12 3zm4 14c0 2.21-1.79 4-4 4s-4-1.79-4-4v-3.27l4 2.18 4-2.18V17z"/></svg>
@@ -446,27 +484,27 @@
     <div class="section-intro">
       <div class="intro-label">What I Do</div>
       <div class="vignette-grid">
-        <div class="vignette">
+        <a href="#section-analysis" class="vignette">
           <div class="vignette-number">01</div>
           <div class="vignette-title"><span class="vignette-accent">Record</span> from living tissue</div>
           <div class="vignette-body">Patch-clamp, ex vivo ERG, calcium imaging, two-photon microscopy. I generate the ground truth data that models have to explain. Over 1,000 retinal recordings and 400+ tissue samples across disease models, development studies, and device validation.</div>
-        </div>
-        <div class="vignette">
+        </a>
+        <a href="#section-modeling" class="vignette">
           <div class="vignette-number">02</div>
           <div class="vignette-title"><span class="vignette-accent">Model</span> what the recording shows</div>
           <div class="vignette-body">ODE networks, biophysical simulations, reaction-diffusion PDEs. The model has to reproduce the data — or it doesn't count. Simulations of retinal waves, dopamine dynamics, and vascular remodeling, each constrained by recordings from the same tissue.</div>
-        </div>
-        <div class="vignette">
+        </a>
+        <a href="#section-hardware" class="vignette">
           <div class="vignette-number">03</div>
           <div class="vignette-title"><span class="vignette-accent">Build</span> the tools that make both scale</div>
           <div class="vignette-body">Python pipelines, Julia toolkits, GPU-accelerated analysis, 3D-printed hardware. The experiment generates more data than anyone can hand-annotate — so the software and instruments have to do the work.</div>
-        </div>
+        </a>
       </div>
     </div>
   </header>
 
   <!-- ── ANALYSIS TOOLS ── -->
-  <section>
+  <section id="section-analysis">
     <div class="section-label">Open Source</div>
     <div class="section-title">Analysis Tools</div>
     <div class="repo-grid">
@@ -541,7 +579,7 @@
   </section>
 
   <!-- ── HARDWARE TOOLS ── -->
-  <section>
+  <section id="section-hardware">
     <div class="section-label">Open Source</div>
     <div class="section-title">Hardware Tools</div>
     <div class="repo-grid">
@@ -579,7 +617,7 @@
   </section>
 
   <!-- ── MODELING TOOLS ── -->
-  <section>
+  <section id="section-modeling">
     <div class="section-label">Open Source</div>
     <div class="section-title">Modeling Tools</div>
     <div class="repo-grid">
@@ -648,7 +686,7 @@
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('load', function() {
 (function() {
   const canvas = document.getElementById('neuro-canvas');
@@ -777,15 +815,4 @@ window.addEventListener('load', function() {
     const lv=ctx.createLinearGradient(0,0,w*.06,0);lv.addColorStop(0,'rgba(8,12,16,0.9)');lv.addColorStop(1,'rgba(8,12,16,0)');ctx.fillStyle=lv;ctx.fillRect(0,0,w*.08,h);
     const rv=ctx.createLinearGradient(w*.93,0,w,0);rv.addColorStop(0,'rgba(8,12,16,0)');rv.addColorStop(1,'rgba(8,12,16,0.9)');ctx.fillStyle=rv;ctx.fillRect(w*.92,0,w*.08,h);
     const tv=ctx.createLinearGradient(0,0,0,h*.06);tv.addColorStop(0,'rgba(8,12,16,0.7)');tv.addColorStop(1,'rgba(8,12,16,0)');ctx.fillStyle=tv;ctx.fillRect(0,0,w,h*.08);
-    const bv=ctx.createLinearGradient(0,h*.94,0,h);bv.addColorStop(0,'rgba(8,12,16,0)');bv.addColorStop(1,'rgba(8,12,16,0.7)');ctx.fillStyle=bv;ctx.fillRect(0,h*.92,w,h*.08);
-    frame++;requestAnimationFrame(draw);
-  }
-
-  function init(){ neurons=[];signals=[];binaryStreams=[];crossSignals=[];circuitEvents=[];mouseRipples=[];initNeurons();initBinary(); }
-  init(); draw();
-})();
-});
-</script>
-
-</body>
-</html>
+    const bv=ctx.createLinearGradient(0,h*.94,0,h);bv.addColorStop(0,'rgba(8,12,16,0)');bv.addColorStop(1,'rgba(8,12,16,0.7)');ctx.fillStyle=bv;ctx.fillRect(0,h*.92,w
