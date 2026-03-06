@@ -869,4 +869,15 @@ window.addEventListener('load', function() {
     const lv=ctx.createLinearGradient(0,0,w*.06,0);lv.addColorStop(0,'rgba(8,12,16,0.9)');lv.addColorStop(1,'rgba(8,12,16,0)');ctx.fillStyle=lv;ctx.fillRect(0,0,w*.08,h);
     const rv=ctx.createLinearGradient(w*.93,0,w,0);rv.addColorStop(0,'rgba(8,12,16,0)');rv.addColorStop(1,'rgba(8,12,16,0.9)');ctx.fillStyle=rv;ctx.fillRect(w*.92,0,w*.08,h);
     const tv=ctx.createLinearGradient(0,0,0,h*.06);tv.addColorStop(0,'rgba(8,12,16,0.7)');tv.addColorStop(1,'rgba(8,12,16,0)');ctx.fillStyle=tv;ctx.fillRect(0,0,w,h*.08);
-    const bv=ctx.createLinearGradient(0,h*.94,0,h);bv.addColorStop(0,'rgba(8,12,16,0)');bv.addColorStop(1,'rgba(8,12,16,0.7)');ctx.fillStyle=bv;ctx.fillRect(0,h*.92,w
+    const bv=ctx.createLinearGradient(0,h*.94,0,h);bv.addColorStop(0,'rgba(8,12,16,0)');bv.addColorStop(1,'rgba(8,12,16,0.7)');ctx.fillStyle=bv;ctx.fillRect(0,h*.92,w,h*.08);
+    frame++;requestAnimationFrame(draw);
+  }
+
+  function init(){ neurons=[];signals=[];binaryStreams=[];crossSignals=[];circuitEvents=[];mouseRipples=[];initNeurons();initBinary(); }
+  init(); draw();
+})();
+});
+</script>
+
+</body>
+</html>
